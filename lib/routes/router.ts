@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
+import apiProviderRouter from './api_provider.router';
 import campaignRouter from './campaign.router';
 import clientRouter from './client.router';
 import taskRouter from './task.router';
@@ -24,5 +25,6 @@ router.use('/v1/auth', userRouter);
 router.use('/v1/tasks', taskRouter);
 router.use('/v1/campaign', campaignRouter);
 router.use('/v1/client', clientRouter);
+router.use('/v1/providers', apiProviderRouter);
 
 export default router;  
