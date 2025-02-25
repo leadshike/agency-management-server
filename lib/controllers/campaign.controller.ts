@@ -26,8 +26,13 @@ export const createCampaign = async (
             status: 'Created',
         });
         const savedCampaignAnalytics: ICampaignAnalytics = await campaignAnalytics.save();
-        req.body.analytics_Id = savedCampaignAnalytics.id;
-        const campaign = new Campaign(req.body);
+
+        const body = req.body;
+        body.analytics_Id = savedCampaignAnalytics.id;
+        body.created_at = new Date();
+        body.last_updated_at = new Date();
+
+        const campaign = new Campaign(body);
         const savedCampaign: ICampaign = await campaign.save();
         savedCampaignAnalytics.campaign_id = savedCampaign.id;
         savedCampaignAnalytics.save();
@@ -42,7 +47,7 @@ export const getCampaigns = async (
     req: Request,
     res: Response) => {
     console.log("getCampaigns");
-    const { id } = req.body;
+    const id = req.params.id;
     if (!id) {
         return res.status(httpStatus.BAD_GATEWAY).json({ message: 'Bad Request' });
     }
@@ -62,7 +67,7 @@ export const getCampaignAnalytics = async (
     req: Request,
     res: Response) => {
     console.log("getCampaignAnalytics");
-    const { id } = req.body;
+    const id = req.params.id;
     if (!id) {
         return res.status(httpStatus.BAD_GATEWAY).json({ message: 'Bad Request' });
     }
@@ -82,7 +87,7 @@ export const deleteCampaign = async (
     req: Request,
     res: Response) => {
     console.log("deleteCampaign");
-    const { id } = req.body;
+    const id = req.params.id;
     if (!id) {
         return res.status(httpStatus.BAD_GATEWAY).json({ message: 'Bad Request' });
     }
@@ -103,7 +108,7 @@ export const startCampaign = async (
     req: Request,
     res: Response) => {
     console.log("startCampaign");
-    const { id } = req.body;
+    const id = req.params.id;
     if (!id) {
         return res.status(httpStatus.BAD_GATEWAY).json({ message: 'Bad Request' });
     }
@@ -111,6 +116,7 @@ export const startCampaign = async (
         const campaigns: ICampaign | null = await Campaign.findByIdAndUpdate(id, {
             $set: {
                 status: 1,
+                last_updated_at: new Date(),
             }
         });
         if (!campaigns) {
@@ -127,7 +133,7 @@ export const stopCampaign = async (
     req: Request,
     res: Response) => {
     console.log("stopCampaign");
-    const { id } = req.body;
+    const id = req.params.id;
     if (!id) {
         return res.status(httpStatus.BAD_GATEWAY).json({ message: 'Bad Request' });
     }
@@ -135,6 +141,7 @@ export const stopCampaign = async (
         const campaigns: ICampaign | null = await Campaign.findByIdAndUpdate(id, {
             $set: {
                 status: 2,
+                last_updated_at: new Date(),
             }
         });
         if (!campaigns) {

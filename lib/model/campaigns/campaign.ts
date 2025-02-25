@@ -8,7 +8,6 @@ export interface ICampaign extends Document {
     created_at: Date;
     status: number;
     last_updated_at: Date;
-    workspaces: ObjectId[];
     analytics_Id: ObjectId;
     user_id: ObjectId;
     campaign_schedule: ICampaignSchedule[];
@@ -45,7 +44,6 @@ const CampaignSchema: Schema = new Schema({
     created_at: { type: Date, required: true },
     status: { type: Number, required: true },
     last_updated_at: { type: Date, required: true },
-    workspaces: { type: Array<Schema.Types.ObjectId>, required: true },
     analytics_Id: { type: Schema.Types.ObjectId, required: true },
     user_id: { type: Schema.Types.ObjectId, required: true },
     campaign_schedule: { type: Array<Object>, required: true },

@@ -20,7 +20,7 @@ export const getClientDetails = async (
     req: Request,
     res: Response) => {
     console.log("getClientDetails");
-    const { id } = req.body;
+    const id = req.params.id;
     if (!id) {
         return res.status(httpStatus.BAD_GATEWAY).json({ message: 'Bad Request' });
     }
@@ -40,12 +40,35 @@ export const deleteClient = async (
     req: Request,
     res: Response) => {
     console.log("deleteClient");
-    const { id } = req.body;
+    const id = req.params.id;
     if (!id) {
         return res.status(httpStatus.BAD_GATEWAY).json({ message: 'Bad Request' });
     }
     try {
         const client: IClient | null = await Client.findByIdAndDelete(id);
+        if (!client) {
+            return res.status(httpStatus.NOT_FOUND).json({ message: 'No Client Found' });
+        }
+        res.status(httpStatus.OK).json(client);
+    } catch (error) {
+        if (error instanceof Error)
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
+    }
+}
+
+export const updateClientStatus = async (
+    req: Request,
+    res: Response) => {
+    console.log("deleteClient");
+    const id = req.params.id;
+    const { status } = req.body;
+    if (!id || !status) {
+        return res.status(httpStatus.BAD_GATEWAY).json({ message: 'Bad Request' });
+    }
+    try {
+        const client: IClient | null = await Client.findByIdAndUpdate(id, {
+            stage: status,
+        });
         if (!client) {
             return res.status(httpStatus.NOT_FOUND).json({ message: 'No Client Found' });
         }
